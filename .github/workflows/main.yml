@@ -7,8 +7,6 @@ on:
 jobs:
   build-iotdb-win-cpp:
     runs-on: windows-latest
-    env:
-      BOOST_PATH: ${{github.workspace}}
 
     steps:
       - name: set-java
@@ -30,7 +28,20 @@ jobs:
           boost_version: 1.78.0
           platform_version: 2019
           toolset: msvc
-          boost_install_dir: ${{ env.BOOST_PATH }}
+          boost_install_dir: ${{ github.workspace }}
+
+      - name: set boost path
+        id: set-boost
+        run: |
+          echo "::set-output name=include-dir::echo ${{ env.BOOST_PATH }}/boost/boost"
+          echo "::set-output name=library-dir::echo ${{ env.BOOST_PATH }}/boost/boost/stage/lib"
+
+      - name: echo boost path
+        run: |
+          echo ${{ steps.set-boost.outputs.include-dir }}
+          dir ${{ steps.set-boost.outputs.include-dir }}
+          echo ${{ steps.set-boost.outputs.library-dir }}
+          dir ${{ steps.set-boost.outputs.library-dir }}
 
       - name: install FileDownloader
         run: |
