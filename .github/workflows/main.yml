@@ -34,5 +34,7 @@ jobs:
           C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/win_flex_bison-latest.zip https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
           7z x win_flex_bison-latest.zip win_flex_bison-latest
           dir
+          echo ------
+          dir C:\msys64\usr\bin\
           
         
