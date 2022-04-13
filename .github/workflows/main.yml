@@ -20,6 +20,9 @@ jobs:
       - name: get-cmake
         uses: lukka/get-cmake@v3.23.0
 
+      - name: cmake-help
+        run: cmake --help
+
       - name: install boost
         uses: MarkusJx/install-boost@v2.1.0
         id: install-boost
