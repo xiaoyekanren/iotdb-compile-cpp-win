@@ -9,6 +9,13 @@ jobs:
     runs-on: windows-2019
 
     steps:
+      - name: Cache Maven packages
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: client-${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2-
+
       - name: install boost
         uses: MarkusJx/install-boost@v2.1.0
         id: install-boost
