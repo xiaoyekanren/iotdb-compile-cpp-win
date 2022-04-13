@@ -50,6 +50,5 @@ jobs:
       - name: down flex&bison
         run: |
           DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip -o win_flex_bison-latest.zip
-          dir
 
         
