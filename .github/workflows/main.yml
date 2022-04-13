@@ -37,4 +37,4 @@ jobs:
           cd ${{ github.workspace }}\iotdb
           set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
           set Path
-          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl client-cpp,server,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost\boost" -Dboost.library.dir="${{ github.workspace }}\boost\boost\stage\lib"
+          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost\boost" -Dboost.library.dir="${{ github.workspace }}\boost\boost\stage\lib"
