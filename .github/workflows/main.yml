@@ -32,8 +32,7 @@ jobs:
       - name: download flex&bison
         run: |
           C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/win_flex_bison-latest.zip https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
-          7z x win_flex_bison-latest.zip win_flex_bison-latest
+          7z x win_flex_bison-latest.zip -owin_flex_bison-latest
           dir
-          7z
-          7z --help
+          dir win_flex_bison-latest
         
