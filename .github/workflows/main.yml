@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-iotdb-win-cpp:
-    runs-on: windows-2022
+    runs-on: windows-2019
 
     steps:
       - name: install boost
@@ -14,7 +14,7 @@ jobs:
         id: install-boost
         with:
           boost_version: 1.78.0
-          platform_version: 2022
+          platform_version: 2019
           toolset: msvc
           boost_install_dir: ${{ github.workspace }}
 
@@ -37,4 +37,4 @@ jobs:
           cd ${{ github.workspace }}\iotdb
           set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
           set Path
-          mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl client-cpp,server,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost\boost" -Dboost.library.dir="${{ github.workspace }}\boost\boost\stage\lib"
+          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl client-cpp,server,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost\boost" -Dboost.library.dir="${{ github.workspace }}\boost\boost\stage\lib"
