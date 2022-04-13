@@ -9,20 +9,6 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: echo java
-        run: java -version
-#      - name: set-java
-#        uses: actions/setup-java@v2
-#        with:
-#          distribution: 'zulu'
-#          java-version: 8
-#
-#      - name: get-cmake
-#        uses: lukka/get-cmake@v3.23.0
-#
-#      - name: cmake-help
-#        run: cmake --help
-#
 #      - name: install boost
 #        uses: MarkusJx/install-boost@v2.1.0
 #        id: install-boost
@@ -46,7 +32,7 @@ jobs:
       - name: download flex&bison
         run: |
           C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/win_flex_bison-latest.zip https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
-          7z x win_flex_bison-latest.zip win_flex_bison-latest
-          dir win_flex_bison-latest
+          7z x win_flex_bison-latest.zip
+          dir
           
         
