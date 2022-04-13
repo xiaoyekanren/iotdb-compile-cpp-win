@@ -39,9 +39,7 @@ jobs:
       - name: echo boost path
         run: |
           echo ${{ steps.set-boost.outputs.include-dir }}
-#          dir ${{ steps.set-boost.outputs.include-dir }}
           echo ${{ steps.set-boost.outputs.library-dir }}
-#          dir ${{ steps.set-boost.outputs.library-dir }}
 
       - name: install FileDownloader
         run: |
