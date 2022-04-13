@@ -8,7 +8,7 @@ jobs:
   build-iotdb-win-cpp:
     runs-on: windows-latest
     env:
-      BOOST_PATH: ${{github.workspace}}/boost/boost
+      BOOST_PATH: ${{github.workspace}}
 
     steps:
       - name: set-java
