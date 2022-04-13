@@ -16,9 +16,11 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 8
+        run: java -version
 
       - name: get-cmake
         uses: lukka/get-cmake@v3.23.0
+        run: cmake --help
 
       - name: install boost
         uses: MarkusJx/install-boost@v2.1.0
@@ -28,14 +30,17 @@ jobs:
           platform_version: 2019
           toolset: msvc
           boost_install_dir: ${{ env.BOOST_PATH }}
-
-      - name: install FileDownloader
         run: |
-          dotnet tool install -g dotnetCampus.FileDownloader.Tool
+          dir
+
+#      - name: install FileDownloader
+#        run: |
+#          dotnet tool install -g dotnetCampus.FileDownloader.Tool
 
       - name: down flex&bison
         run: |
-          DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip -o win_flex_bison-latest.zip
+#          DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip -o win_flex_bison-latest.zip
+          wget https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip 
           dir
 
         
