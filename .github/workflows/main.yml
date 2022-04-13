@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-iotdb-win-cpp:
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     steps:
       - name: install boost
@@ -45,6 +45,7 @@ jobs:
           fetch-depth: 0
 
       - name: compile client-cpp
+        shell: cmd
         run: |
           cd ${{ github.workspace }}/iotdb
           mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,example/client-cpp-example -am -DskipTest -Dboost.include.dir="${{ github.workspace }}/boost/boost" -Dboost.library.dir="${{ github.workspace }}/boost/boost/stage/lib"
