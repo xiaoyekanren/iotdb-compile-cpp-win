@@ -9,37 +9,37 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: set-java
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'zulu'
-          java-version: 8
-
-      - name: get-cmake
-        uses: lukka/get-cmake@v3.23.0
-
-      - name: cmake-help
-        run: cmake --help
-
-      - name: install boost
-        uses: MarkusJx/install-boost@v2.1.0
-        id: install-boost
-        with:
-          boost_version: 1.78.0
-          platform_version: 2019
-          toolset: msvc
-          boost_install_dir: ${{ github.workspace }}
-
-      - name: set boost path
-        id: set-boost
-        run: |
-          echo "::set-output name=include-dir::${{ github.workspace }}/boost/boost"
-          echo "::set-output name=library-dir::${{ github.workspace }}/boost/boost/stage/lib"
-
-      - name: echo boost path
-        run: |
-          echo ${{ steps.set-boost.outputs.include-dir }}
-          echo ${{ steps.set-boost.outputs.library-dir }}
+#      - name: set-java
+#        uses: actions/setup-java@v2
+#        with:
+#          distribution: 'zulu'
+#          java-version: 8
+#
+#      - name: get-cmake
+#        uses: lukka/get-cmake@v3.23.0
+#
+#      - name: cmake-help
+#        run: cmake --help
+#
+#      - name: install boost
+#        uses: MarkusJx/install-boost@v2.1.0
+#        id: install-boost
+#        with:
+#          boost_version: 1.78.0
+#          platform_version: 2019
+#          toolset: msvc
+#          boost_install_dir: ${{ github.workspace }}
+#
+#      - name: set boost path
+#        id: set-boost
+#        run: |
+#          echo "::set-output name=include-dir::${{ github.workspace }}/boost/boost"
+#          echo "::set-output name=library-dir::${{ github.workspace }}/boost/boost/stage/lib"
+#
+#      - name: echo boost path
+#        run: |
+#          echo ${{ steps.set-boost.outputs.include-dir }}
+#          echo ${{ steps.set-boost.outputs.library-dir }}
 
       - name: install FileDownloader
         run: |
@@ -47,6 +47,6 @@ jobs:
 
       - name: down flex&bison
         run: |
-          DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip -o win_flex_bison-latest.zip
+          DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
 
         
