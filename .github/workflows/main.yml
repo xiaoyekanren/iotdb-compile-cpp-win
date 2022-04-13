@@ -27,8 +27,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: iotdb
-          repository: 'apache/iotdb'
-          ref: rel/0.12
+          repository: 'xiaoyekanren/iotdb'
+          ref: zzm-test
           fetch-depth: 0
 
       - name: compile client-cpp
