@@ -36,10 +36,10 @@ jobs:
 #      - name: install FileDownloader
 #        run: |
 #          dotnet tool install -g dotnetCampus.FileDownloader.Tool
+#          DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip -o win_flex_bison-latest.zip
 
       - name: down flex&bison
         run: |
-          # DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip -o win_flex_bison-latest.zip
           wget https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip 
           dir
 
