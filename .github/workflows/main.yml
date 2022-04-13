@@ -9,6 +9,8 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      - name: echo java
+        run: java -version
 #      - name: set-java
 #        uses: actions/setup-java@v2
 #        with:
@@ -41,12 +43,10 @@ jobs:
 #          echo ${{ steps.set-boost.outputs.include-dir }}
 #          echo ${{ steps.set-boost.outputs.library-dir }}
 
-      - name: install FileDownloader
+      - name: download flex&bison
         run: |
-          dotnet tool install -g dotnetCampus.FileDownloader.Tool
-
-      - name: down flex&bison
-        run: |
-          DownloadFile -u https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
-
+          C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/win_flex_bison-latest.zip https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
+          7z x win_flex_bison-latest.zip win_flex_bison-latest
+          dir win_flex_bison-latest
+          
         
