@@ -9,51 +9,41 @@ jobs:
     runs-on: windows-2019
 
     steps:
-      - name: tree openssl
-        shell: bash
+      - name: download & unpack boost
+        shell: cmd
         run: |
-          cd /c/Program\ Files/OpenSSL
-          tree
-#      - name: install boost
-#        uses: MarkusJx/install-boost@v2.1.0
-#        id: install-boost
-#        with:
-#          boost_version: 1.78.0
-#          platform_version: 2019
-#          toolset: msvc
-#          boost_install_dir: ${{ github.workspace }}
-#
-#      - name: download & unpack boost
-#        shell: cmd
-#        run: |
-#          C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/boost_1_78_0.zip https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.zip
-#          7z x ${{ github.workspace }}/boost_1_78_0.zip -o${{ github.workspace }}/boost_1_78_0
-#
-#      - name: install boost
-#        shell: pwsh
-#        run: |
-#          cd ${{ github.workspace }}/boost_1_78_0/boost_1_78_0
-#          .\bootstrap.bat
-#          .\b2
-#
-#      - name: download & unpack flex&bison
-#        shell: cmd
-#        run: |
-#          C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/win_flex_bison-latest.zip https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
-#          7z x ${{ github.workspace }}/win_flex_bison-latest.zip -o${{ github.workspace }}/win_flex_bison-latest
-#
-#      - name: Checkout apache/iotdb
-#        uses: actions/checkout@v2
-#        with:
-#          path: iotdb
-#          repository: 'xiaoyekanren/iotdb'
-#          ref: zzm-test
-#          fetch-depth: 0
-#
-#      - name: compile client-cpp
-#        shell: cmd
-#        run: |
-#          cd ${{ github.workspace }}\iotdb
-#          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
-#          set Path
-#          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib"
+          C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/boost_1_78_0.zip https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.zip
+          7z x ${{ github.workspace }}/boost_1_78_0.zip -o${{ github.workspace }}/boost_1_78_0
+
+      - name: install boost
+        shell: pwsh
+        run: |
+          cd ${{ github.workspace }}/boost_1_78_0/boost_1_78_0
+          .\bootstrap.bat
+          .\b2
+
+      - name: download & unpack flex&bison
+        shell: cmd
+        run: |
+          C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/win_flex_bison-latest.zip https://jaist.dl.sourceforge.net/project/winflexbison/win_flex_bison-latest.zip
+          7z x ${{ github.workspace }}/win_flex_bison-latest.zip -o${{ github.workspace }}/win_flex_bison-latest
+
+      - name: install openssl
+        run: |
+          choco install openssl
+
+      - name: Checkout apache/iotdb
+        uses: actions/checkout@v2
+        with:
+          path: iotdb
+          repository: 'xiaoyekanren/iotdb'
+          ref: zzm-test
+          fetch-depth: 0
+
+      - name: compile client-cpp
+        shell: cmd
+        run: |
+          cd ${{ github.workspace }}\iotdb
+          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
+          set Path
+          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib"
