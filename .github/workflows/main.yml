@@ -18,10 +18,14 @@ jobs:
 #          toolset: msvc
 #          boost_install_dir: ${{ github.workspace }}
 
+      - name: download boost
+        shell: cmd
+        run: |
+          C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/boost_1_78_0.zip https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.zip
+
       - name: install boost
         shell: bash
         run: |
-          wget -O ${{ github.workspace }}/boost_1_78_0.zip https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.zip
           unzip ${{ github.workspace }}/boost_1_78_0.zip -d ${{ github.workspace }}/boost_1_78_0
           cd ${{ github.workspace }}/boost_1_78_0/boost_1_78_0
           ./bootstrap.bat
