@@ -11,7 +11,8 @@ jobs:
     steps:
       - name: tree openssl
         run: |
-          tree C:\Program Files\OpenSSL
+          cd C:\Program Files\OpenSSL
+          tree
 #      - name: install boost
 #        uses: MarkusJx/install-boost@v2.1.0
 #        id: install-boost
