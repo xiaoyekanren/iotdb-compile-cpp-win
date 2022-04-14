@@ -25,7 +25,7 @@ jobs:
           7z x ${{ github.workspace }}/boost_1_78_0.zip -o${{ github.workspace }}/boost_1_78_0
           cd ${{ github.workspace }}/boost_1_78_0/boost_1_78_0
           .\bootstrap.bat
-          .\b2.exe
+          .\b2
 
       - name: download flex&bison
         shell: cmd
