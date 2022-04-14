@@ -26,7 +26,7 @@ jobs:
       - name: install boost
         shell: bash
         run: |
-          unzip ${{ github.workspace }}/boost_1_78_0.zip -d ${{ github.workspace }}/boost_1_78_0
+          7z x ${{ github.workspace }}/boost_1_78_0.zip -o${{ github.workspace }}/boost_1_78_0
           cd ${{ github.workspace }}/boost_1_78_0/boost_1_78_0
           ./bootstrap.bat
           ./b2
