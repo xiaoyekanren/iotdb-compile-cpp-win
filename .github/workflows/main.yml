@@ -12,7 +12,6 @@ jobs:
       - name: tree openssl
         shell: bash
         run: |
-#          cd C:\Program Files\OpenSSL
           cd /c/Program\ Files\OpenSSL
           tree
 #      - name: install boost
