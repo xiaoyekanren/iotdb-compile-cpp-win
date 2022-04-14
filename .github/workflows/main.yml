@@ -12,7 +12,7 @@ jobs:
       - name: tree openssl
         shell: bash
         run: |
-          cd /c/Program\ Files\OpenSSL
+          cd /c/Program\ Files/OpenSSL
           tree
 #      - name: install boost
 #        uses: MarkusJx/install-boost@v2.1.0
