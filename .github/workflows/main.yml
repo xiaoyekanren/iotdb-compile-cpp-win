@@ -10,7 +10,9 @@ jobs:
 
     steps:
       - name: tree openssl
+        shell: cmd
         run: |
+          c:
           cd C:\Program Files\OpenSSL
           tree
 #      - name: install boost
