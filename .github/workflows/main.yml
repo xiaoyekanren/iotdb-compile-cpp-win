@@ -19,7 +19,7 @@ jobs:
 #          boost_install_dir: ${{ github.workspace }}
 
       - name: install boost
-        shell: cmd
+        shell: bash
         run: |
           C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/boost_1_78_0.zip https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.zip
           7z x ${{ github.workspace }}/boost_1_78_0.zip -o${{ github.workspace }}/boost_1_78_0
