@@ -13,12 +13,6 @@ jobs:
     runs-on: windows-2019
 
     steps:
-#      - uses: actions/setup-java@v3
-#        with:
-#          distribution: 'temurin'
-#          java-version: '8'
-#          cache: 'maven'
-
       - name: download & unpack boost
         shell: cmd
         run: |
@@ -51,6 +45,10 @@ jobs:
           fetch-depth: 0
 
       - name: compile client-cpp
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
         shell: cmd
         run: |
           cd ${{ github.workspace }}\iotdb
