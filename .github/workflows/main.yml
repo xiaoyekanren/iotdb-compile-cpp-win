@@ -6,9 +6,19 @@ on:
 
 jobs:
   build-iotdb-win-cpp:
+    strategy:
+      max-parallel: 20
+      matrix:
+        iotdb_version: [ rel/0.12,rel/0.13,master ]
     runs-on: windows-2019
 
     steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+          cache: 'maven'
+
       - name: download & unpack boost
         shell: cmd
         run: |
@@ -36,8 +46,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           path: iotdb
-          repository: 'xiaoyekanren/iotdb'
-          ref: zzm-test
+          repository: 'apache/iotdb'
+          ref: ${{ matrix.iotdb_version }}
           fetch-depth: 0
 
       - name: compile client-cpp
