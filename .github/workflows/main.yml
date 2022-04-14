@@ -13,11 +13,11 @@ jobs:
     runs-on: windows-2019
 
     steps:
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '8'
-          cache: 'maven'
+#      - uses: actions/setup-java@v3
+#        with:
+#          distribution: 'temurin'
+#          java-version: '8'
+#          cache: 'maven'
 
       - name: download & unpack boost
         shell: cmd
