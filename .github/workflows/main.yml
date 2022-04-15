@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-iotdb-win2019-cpp:
+  build-client-cpp-win:
     strategy:
       max-parallel: 20
       matrix:
