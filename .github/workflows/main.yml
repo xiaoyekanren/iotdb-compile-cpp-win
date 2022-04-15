@@ -5,12 +5,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-iotdb-win-cpp:
+  build-iotdb-win2019-cpp:
     strategy:
       max-parallel: 20
       matrix:
         iotdb_version: [ rel/0.12,rel/0.13,master ]
-    runs-on: windows-2019
+        os: [ windows-2019,windows-2022 ]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: download & unpack boost
@@ -50,9 +51,19 @@ jobs:
           java-version: '8'
 
       - name: compile client-cpp
+        if: ${{ matrix.os == 'windows-2019' }}
         shell: cmd
         run: |
           cd ${{ github.workspace }}\iotdb
           set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
           set Path
           mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib"
+
+      - name: compile client-cpp
+        if: ${{ matrix.os == 'windows-2022' }}
+        shell: cmd
+        run: |
+          cd ${{ github.workspace }}\iotdb
+          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
+          set Path
+          mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib"
