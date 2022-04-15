@@ -68,3 +68,29 @@ jobs:
           set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
           set Path
           mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib"
+
+  test:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        os: [ windows-2019,windows-2022 ]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: run cmake in pwsh
+        shell: pwsh
+        run: |
+          cmake --help
+      - name: run cmake in bash
+        shell: bash
+        run: |
+          cmake --help
+      - name: run cmake in cmd
+        shell: cmd
+        run: |
+          cmake --help
+      - name: run cmake in powershell
+        shell: powershell
+        run: |
+          cmake --help
