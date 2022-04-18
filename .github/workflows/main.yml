@@ -84,32 +84,32 @@ jobs:
           set Path
           mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
 
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.time-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}
-          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Nightly Performance Test Release (UTC+0 ${{ steps.time-information.outputs.date }}) (Java ${{ matrix.java }}) (Unofficial)
-          body: |
-            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Nightly Performance Test Release (Unofficial)
-            IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
-            IoTDB commit ID: [${{ steps.iotdb-information.outputs.commit }}](https://github.com/apache/iotdb/commit/${{ steps.iotdb-information.outputs.commit }})
-            Build date: UTC+0 ${{ steps.time-information.outputs.date }}
-            Java version: ${{ matrix.java }}
-          draft: false
-          prerelease: false
-
-      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin.zip
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.pwd.outputs.pwd }}/iotdb/distribution/target/apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin.zip
-          asset_name: apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin-nightly-${{ steps.time-information.outputs.date }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}.zip
-          asset_content_type: application/zip
+#      - name: Create release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ steps.time-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}
+#          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Nightly Performance Test Release (UTC+0 ${{ steps.time-information.outputs.date }}) (Java ${{ matrix.java }}) (Unofficial)
+#          body: |
+#            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Nightly Performance Test Release (Unofficial)
+#            IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
+#            IoTDB commit ID: [${{ steps.iotdb-information.outputs.commit }}](https://github.com/apache/iotdb/commit/${{ steps.iotdb-information.outputs.commit }})
+#            Build date: UTC+0 ${{ steps.time-information.outputs.date }}
+#            Java version: ${{ matrix.java }}
+#          draft: false
+#          prerelease: false
+#
+#      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin.zip
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ${{ steps.pwd.outputs.pwd }}/iotdb/distribution/target/apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin.zip
+#          asset_name: apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin-nightly-${{ steps.time-information.outputs.date }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}.zip
+#          asset_content_type: application/zip
 
 #  test:
 #    strategy:
