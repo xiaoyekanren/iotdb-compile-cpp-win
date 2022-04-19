@@ -108,7 +108,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/iotdb/client-cpp/target/client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
           asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-${{ matrix.java }}.zip
           asset_content_type: application/zip
@@ -124,7 +124,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/iotdb/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
           asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-${{ matrix.java }}.zip
           asset_content_type: application/zip
