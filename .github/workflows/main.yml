@@ -92,10 +92,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.sys-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}
+          tag_name: ${{ steps.sys-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}
           release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release (UTC+0 ${{ steps.sys-information.outputs.date }}) (Java ${{ matrix.java }}) (Unofficial)
           body: |
-            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release for client-cpp on $${{ matrix.os }}(Unofficial)
+            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release for client-cpp on ${{ matrix.os }}(Unofficial)
             IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
             IoTDB commit ID: [${{ steps.iotdb-information.outputs.commit }}](https://github.com/apache/iotdb/commit/${{ steps.iotdb-information.outputs.commit }})
             Build date: UTC+0 ${{ steps.sys-information.outputs.date }}
