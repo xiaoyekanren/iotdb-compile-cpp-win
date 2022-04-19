@@ -15,11 +15,17 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
       - name: get time information
-        id: time-information
+        id: sys-information
         shell: bash
         run: |
           echo "::set-output name=date::$(date +"%Y-%m-%d-%H-%M-%S")"
+          echo "::set-output name=java-version::$(java -version 2>&1 |head -n 1 | cut -d ' ' -f 3 | sed 's/"//g')"
 
       - name: download & unpack boost
         shell: cmd
@@ -61,10 +67,6 @@ jobs:
           echo "::set-output name=branch::$(git branch |grep ^*|cut -d ' ' -f 2)"
           echo "::set-output name=iotdb-version::$(cat pom.xml  | egrep '^    <version>'|sed 's# ##g'|  sed 's#<version>##g' | sed 's#</version>##g')"
 
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '8'
 
       - name: compile client-cpp
         if: ${{ matrix.os == 'windows-2019' }}
@@ -84,33 +86,48 @@ jobs:
           set Path
           mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
 
-#      - name: Create release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ steps.time-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}
-#          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Nightly Performance Test Release (UTC+0 ${{ steps.time-information.outputs.date }}) (Java ${{ matrix.java }}) (Unofficial)
-#          body: |
-#            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Nightly Performance Test Release (Unofficial)
-#            IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
-#            IoTDB commit ID: [${{ steps.iotdb-information.outputs.commit }}](https://github.com/apache/iotdb/commit/${{ steps.iotdb-information.outputs.commit }})
-#            Build date: UTC+0 ${{ steps.time-information.outputs.date }}
-#            Java version: ${{ matrix.java }}
-#          draft: false
-#          prerelease: false
-#
-#      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin.zip
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ${{ steps.pwd.outputs.pwd }}/iotdb/distribution/target/apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin.zip
-#          asset_name: apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-all-bin-nightly-${{ steps.time-information.outputs.date }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}.zip
-#          asset_content_type: application/zip
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.sys-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ matrix.java }}
+          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release (UTC+0 ${{ steps.sys-information.outputs.date }}) (Java ${{ matrix.java }}) (Unofficial)
+          body: |
+            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release for client-cpp on $${{ matrix.os }}(Unofficial)
+            IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
+            IoTDB commit ID: [${{ steps.iotdb-information.outputs.commit }}](https://github.com/apache/iotdb/commit/${{ steps.iotdb-information.outputs.commit }})
+            Build date: UTC+0 ${{ steps.sys-information.outputs.date }}
+            Java version: ${{ steps.sys-information.outputs.java-version}}
+          draft: false
+          prerelease: false
 
+      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-${{ matrix.os }}-${{ steps.sys-information.outputs.java-version}}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/iotdb/client-cpp/target/client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-${{ matrix.java }}.zip
+          asset_content_type: application/zip
+
+      - name: compress client-cpp-example
+        shell: bash
+        run: |
+          cd ${{ github.workspace }}\iotdb\example\client-cpp-example\target
+          zip -r client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip client CMakeLists.txt SessionExample.cpp
+
+      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-example-${{ matrix.os }}-${{ steps.sys-information.outputs.java-version}}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/iotdb/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-${{ matrix.java }}.zip
+          asset_content_type: application/zip
 #  test:
 #    strategy:
 #      fail-fast: false
