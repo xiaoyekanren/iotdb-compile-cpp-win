@@ -103,14 +103,14 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-${{ matrix.os }}-${{ steps.sys-information.outputs.java-version}}.zip
+      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/iotdb/client-cpp/target/client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
-          asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-${{ steps.sys-information.outputs.java-version}}.zip
+          asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}.zip
           asset_content_type: application/zip
 
       - name: compress client-cpp-example
@@ -119,14 +119,14 @@ jobs:
           cd iotdb/example/client-cpp-example/target
           7z a  client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip client CMakeLists.txt SessionExample.cpp
 
-      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-example-${{ matrix.os }}-${{ steps.sys-information.outputs.java-version}}.zip
+      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-example-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/iotdb/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
-          asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-${{ steps.sys-information.outputs.java-version}}.zip
+          asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}.zip
           asset_content_type: application/zip
 #  test:
 #    strategy:
