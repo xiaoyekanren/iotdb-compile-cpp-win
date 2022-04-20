@@ -10,7 +10,7 @@ jobs:
       fail-fast: false
       max-parallel: 20
       matrix:
-        iotdb_version: [ rel/0.12,rel/0.13,master ]
+#        iotdb_version: [ rel/0.12,rel/0.13,master ]
         os: [ windows-2019,windows-2022 ]
     runs-on: ${{ matrix.os }}
 
@@ -32,7 +32,6 @@ jobs:
         run: |
           C:\msys64\usr\bin\wget.exe -O ${{ github.workspace }}/boost_1_78_0.zip https://boostorg.jfrog.io/artifactory/main/release/1.78.0/source/boost_1_78_0.zip
           7z x ${{ github.workspace }}/boost_1_78_0.zip -o${{ github.workspace }}/boost_1_78_0
-
       - name: install boost
         shell: pwsh
         run: |
@@ -53,38 +52,114 @@ jobs:
       - name: Checkout apache/iotdb
         uses: actions/checkout@v2
         with:
-          path: iotdb
+          path: iotdb-0.12
           repository: 'apache/iotdb'
-          ref: ${{ matrix.iotdb_version }}
+          ref: rel/0.12
           fetch-depth: 0
-
-      - name: get iotdb information
-        id: iotdb-information
+      - name: get iotdb 0.12 info
+        id: iotdb-0.12-info
         shell: bash
         run: |
-          cd iotdb
+          cd iotdb-0.12
           echo "::set-output name=commit::$(git rev-parse --short HEAD)"
           echo "::set-output name=branch::$(git branch |grep ^*|cut -d ' ' -f 2)"
-          echo "::set-output name=iotdb-version::$(cat pom.xml  | egrep '^    <version>'|sed 's# ##g'|  sed 's#<version>##g' | sed 's#</version>##g')"
-
-
+          echo "::set-output name=version::$(cat pom.xml  | egrep '^    <version>'|sed 's# ##g'|  sed 's#<version>##g' | sed 's#</version>##g')"
       - name: compile client-cpp
         if: ${{ matrix.os == 'windows-2019' }}
         shell: cmd
         run: |
-          cd ${{ github.workspace }}\iotdb
+          cd ${{ github.workspace }}\iotdb-0.12
           set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
           set Path
           mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
-
       - name: compile client-cpp
         if: ${{ matrix.os == 'windows-2022' }}
         shell: cmd
         run: |
-          cd ${{ github.workspace }}\iotdb
+          cd ${{ github.workspace }}\iotdb-0.12
           set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
           set Path
           mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
+      - name: compress client-cpp-example
+        shell: bash
+        run: |
+          cd iotdb-0.12/example/client-cpp-example/target
+          7z a  client-cpp-example-${{ steps.iotdb-0.12-info.outputs.version }}-cpp-windows-x86_64.zip client CMakeLists.txt SessionExample.cpp
+
+      - name: Checkout apache/iotdb
+        uses: actions/checkout@v2
+        with:
+          path: iotdb-0.13
+          repository: 'apache/iotdb'
+          ref: rel/0.13
+          fetch-depth: 0
+      - name: get iotdb 0.13 info
+        id: iotdb-0.13-info
+        shell: bash
+        run: |
+          cd iotdb-0.13
+          echo "::set-output name=commit::$(git rev-parse --short HEAD)"
+          echo "::set-output name=branch::$(git branch |grep ^*|cut -d ' ' -f 2)"
+          echo "::set-output name=version::$(cat pom.xml  | egrep '^    <version>'|sed 's# ##g'|  sed 's#<version>##g' | sed 's#</version>##g')"
+      - name: compile client-cpp
+        if: ${{ matrix.os == 'windows-2019' }}
+        shell: cmd
+        run: |
+          cd ${{ github.workspace }}\iotdb-0.13
+          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
+          set Path
+          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
+      - name: compile client-cpp
+        if: ${{ matrix.os == 'windows-2022' }}
+        shell: cmd
+        run: |
+          cd ${{ github.workspace }}\iotdb-0.13
+          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
+          set Path
+          mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
+      - name: compress client-cpp-example
+        shell: bash
+        run: |
+          cd iotdb-0.13/example/client-cpp-example/target
+          7z a  client-cpp-example-${{ steps.iotdb-0.13-info.outputs.version }}-cpp-windows-x86_64.zip client CMakeLists.txt SessionExample.cpp
+
+      - name: Checkout apache/iotdb
+        uses: actions/checkout@v2
+        with:
+          path: iotdb-master
+          repository: 'apache/iotdb'
+          ref: master
+          fetch-depth: 0
+      - name: get iotdb master info
+        id: iotdb-master-info
+        shell: bash
+        run: |
+          cd iotdb-master
+          echo "::set-output name=commit::$(git rev-parse --short HEAD)"
+          echo "::set-output name=branch::$(git branch |grep ^*|cut -d ' ' -f 2)"
+          echo "::set-output name=version::$(cat pom.xml  | egrep '^    <version>'|sed 's# ##g'|  sed 's#<version>##g' | sed 's#</version>##g')"
+      - name: compile client-cpp
+        if: ${{ matrix.os == 'windows-2019' }}
+        shell: cmd
+        run: |
+          cd ${{ github.workspace }}\iotdb-master
+          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
+          set Path
+          mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
+      - name: compile client-cpp
+        if: ${{ matrix.os == 'windows-2022' }}
+        shell: cmd
+        run: |
+          cd ${{ github.workspace }}\iotdb-master
+          set Path=%Path%;${{ github.workspace }}\win_flex_bison-latest
+          set Path
+          mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}\boost_1_78_0\boost_1_78_0\stage\lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}\iotdb\compile-tools\thrift\target\cmake-3.23.1-windows-x86_64"
+      - name: compress client-cpp-example
+        shell: bash
+        run: |
+          cd iotdb-master/example/client-cpp-example/target
+          7z a  client-cpp-example-${{ steps.iotdb-master-info.outputs.version }}-cpp-windows-x86_64.zip client CMakeLists.txt SessionExample.cpp
+
 
       - name: Create release
         id: create-release
@@ -92,64 +167,68 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.sys-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}
-          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release (UTC+0 ${{ steps.sys-information.outputs.date }}) (Java ${{ steps.sys-information.outputs.java-version}}) (${{ matrix.os }}) (Unofficial)
+          tag_name: ${{ steps.sys-information.outputs.date }}-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}
+          release_name: Apache IoTDB Client Cpp Daily Release (UTC+0 ${{ steps.sys-information.outputs.date }})
           body: |
-            Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release for client-cpp on ${{ matrix.os }}(Unofficial)
-            IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
-            IoTDB commit ID: [${{ steps.iotdb-information.outputs.commit }}](https://github.com/apache/iotdb/commit/${{ steps.iotdb-information.outputs.commit }})
-            Build date: UTC+0 ${{ steps.sys-information.outputs.date }}
-            Java version: ${{ steps.sys-information.outputs.java-version}}
+            Java Version: ${{ steps.sys-information.outputs.java-version}}
+            Operating System: ${{ matrix.os }}
+            (Unofficial)
           draft: false
           prerelease: false
 
-      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
+      - name: Upload apache-iotdb-0.12-client-cpp-example-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/iotdb/client-cpp/target/client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
-          asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ matrix.os }}-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
+          asset_path: ${{ github.workspace }}/iotdb-0.12/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-0.12-info.outputs.version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-0.12-client-cpp-example-${{ steps.iotdb-0.12-info.outputs.commit }}-${{ matrix.os }}-x86_64.zip
           asset_content_type: application/zip
-
-      - name: compress client-cpp-example
-        shell: bash
-        run: |
-          cd iotdb/example/client-cpp-example/target
-          7z a  client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip client CMakeLists.txt SessionExample.cpp
-
-      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-example-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
+      - name: Upload apache-iotdb-0.12-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/iotdb/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
-          asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ matrix.os }}-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
+          asset_path: ${{ github.workspace }}/iotdb-0.12/client-cpp/target/client-cpp-${{ steps.iotdb-0.12-info.outputs.version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-0.12-client-cpp-${{ steps.iotdb-0.12-info.outputs.commit }}-${{ matrix.os }}-x86_64.zip
           asset_content_type: application/zip
-#  test:
-#    strategy:
-#      fail-fast: false
-#      max-parallel: 20
-#      matrix:
-#        os: [ windows-2019,windows-2022 ]
-#    runs-on: ${{ matrix.os }}
-#
-#    steps:
-#      - name: run cmake in pwsh
-#        shell: pwsh
-#        run: |
-#          cmake --help
-#      - name: run cmake in bash
-#        shell: bash
-#        run: |
-#          cmake --help
-#      - name: run cmake in cmd
-#        shell: cmd
-#        run: |
-#          cmake --help
-#      - name: run cmake in powershell
-#        shell: powershell
-#        run: |
-#          cmake --help
+
+      - name: Upload apache-iotdb-0.13-client-cpp-example-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/iotdb-0.13/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-0.13-info.outputs.version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-0.13-client-cpp-example-${{ steps.iotdb-0.12-info.outputs.commit }}-${{ matrix.os }}-x86_64.zip
+          asset_content_type: application/zip
+      - name: Upload apache-iotdb-0.13-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/iotdb-0.13/client-cpp/target/client-cpp-${{ steps.iotdb-0.13-info.outputs.version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-0.13-client-cpp-${{ steps.iotdb-0.12-info.outputs.commit }}-${{ matrix.os }}-x86_64.zip
+          asset_content_type: application/zip
+
+      - name: Upload apache-iotdb-master-client-cpp-example-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/iotdb-master/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-master-info.outputs.version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-masterclient-cpp-example-${{ steps.iotdb-0.12-info.outputs.commit }}-${{ matrix.os }}-x86_64.zip
+          asset_content_type: application/zip
+      - name: Upload apache-iotdb-master-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/iotdb-master/client-cpp/target/client-cpp-${{ steps.iotdb-master-info.outputs.version }}-cpp-windows-x86_64.zip
+          asset_name: apache-iotdb-master-client-cpp-${{ steps.iotdb-0.12-info.outputs.commit }}-${{ matrix.os }}-x86_64.zip
+          asset_content_type: application/zip
