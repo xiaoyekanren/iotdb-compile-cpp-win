@@ -68,15 +68,17 @@ jobs:
       - name: compile client-cpp
         if: ${{ matrix.os == 'windows-2019' }}
         run: |
+          export PATH=$PATH:${{ github.workspace }}/win_flex_bison-latest
+#          set Path=%Path%;${{ github.workspace }}/win_flex_bison-latest
+#          set Path
           cd ${{ github.workspace }}/iotdb
-          set Path=%Path%;${{ github.workspace }}/win_flex_bison-latest
-          set Path
           mvn package -Dcmake.generator="Visual Studio 16 2019" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}/boost_1_78_0/boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}/boost_1_78_0/boost_1_78_0/stage/lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}/iotdb/compile-tools/thrift/target/cmake-3.23.1-windows-x86_64"
 
       - name: compile client-cpp
         if: ${{ matrix.os == 'windows-2022' }}
         run: |
+          export PATH=$PATH:${{ github.workspace }}/win_flex_bison-latest
+#          set Path=%Path%;${{ github.workspace }}/win_flex_bison-latest
+#          set Path
           cd ${{ github.workspace }}/iotdb
-          set Path=%Path%;${{ github.workspace }}/win_flex_bison-latest
-          set Path
           mvn package -Dcmake.generator="Visual Studio 17 2022" -P compile-cpp -pl server,client-cpp,example/client-cpp-example -am -DskipTests -Dboost.include.dir="${{ github.workspace }}/boost_1_78_0/boost_1_78_0" -Dboost.library.dir="${{ github.workspace }}/boost_1_78_0/boost_1_78_0/stage/lib" -Dcmake.url="https://github.com/Kitware/CMake/releases/download/v3.23.1/cmake-3.23.1-windows-x86_64.zip" -Dcmake.root.dir="${{ github.workspace }}/iotdb/compile-tools/thrift/target/cmake-3.23.1-windows-x86_64"
