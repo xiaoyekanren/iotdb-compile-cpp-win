@@ -92,8 +92,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.sys-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}
-          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release (UTC+0 ${{ steps.sys-information.outputs.date }}) (Java ${{ steps.sys-information.outputs.java-version}}) (Unofficial)
+          tag_name: ${{ steps.sys-information.outputs.date }}-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}
+          release_name: Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release (UTC+0 ${{ steps.sys-information.outputs.date }}) (Java ${{ steps.sys-information.outputs.java-version}}) (${{ matrix.os }}) (Unofficial)
           body: |
             Apache IoTDB ${{ steps.iotdb-information.outputs.iotdb-version }} Daily Release for client-cpp on ${{ matrix.os }}(Unofficial)
             IoTDB Branch: [${{ matrix.iotdb_version }}](https://github.com/apache/iotdb/tree/${{ matrix.iotdb_version }})
@@ -103,14 +103,14 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}.zip
+      - name: Upload apache-iotdb-${{ steps.iotdb-information.outputs.iotdb-version }}-client-cpp-${{ matrix.os }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/iotdb/client-cpp/target/client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
-          asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}.zip
+          asset_name: apache-iotdb-client-cpp-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ matrix.os }}-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
           asset_content_type: application/zip
 
       - name: compress client-cpp-example
@@ -126,7 +126,7 @@ jobs:
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/iotdb/example/client-cpp-example/target/client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-cpp-windows-x86_64.zip
-          asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-windows-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}.zip
+          asset_name: apache-iotdb-client-cpp-example-${{ steps.iotdb-information.outputs.iotdb-version }}-${{ matrix.os }}-x86_64-${{ steps.iotdb-information.outputs.commit }}-java-${{ steps.sys-information.outputs.java-version}}-${{ matrix.os }}.zip
           asset_content_type: application/zip
 #  test:
 #    strategy:
